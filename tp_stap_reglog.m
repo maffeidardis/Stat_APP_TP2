@@ -18,13 +18,13 @@
 % Chargement des données 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear all
+close all
 clc
 format compact
 load reglog_data_1.mat
 % Vous disposez désormais de X et C 
 % Regarder les données : contenu, dimensions, ... 
 % On peut aussi les représenter sur une figure:
-plotdata(X,C)
 N = length(C);
 
 
@@ -43,8 +43,10 @@ lr = 0.01
 % représenter les données et la droite
 % pour obtenir une nouvelle figure
 subplot(1,2,1)
-plotdata(X,C,w0,w)
-title('Fitting before')
+plotdata(X,C)
+legend('Groupe A', 'Groupe B')
+hold on
+plotw(w0,w, 'Droite sans Optimization')
 
 
 % inférence : calculer les probabilités d'appartenir à la classe 1,
@@ -62,9 +64,7 @@ dw0 = (-(C-Y)*ones(1,length(X))')/N;
 % Faire la mise à jour: 
 w = w - dw*lr
 w0 = w0 - dw0*lr
-subplot(1,2,2)
-plotdata(X,C,w0,w)
-title('Fitting after')
+
 % Représenter la nouvelle droite et jouer avec le pas d'apprentissage 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -75,17 +75,41 @@ title('Fitting after')
 % au cours de l'apprentissage, en particulier 
 % l'évolution de la fonction de perte que l'on cherche à minimiser. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Nepochs = 1000 
+Nepochs = 6000
 Losses = zeros(1,Nepochs);
-%for e=1:Nepochs
-% ...    
-%end
+for e=1:Nepochs
+    a = w0 + w*X;
+    Y = 1./(1+exp(-a));
 
+    % calcul de la fonction de coût
+
+    %Fonction de cout pour chaque point
+    L =  -(C*log(Y') + (1-C)*log(1-Y'))/N;
+    Losses(e) = L;
+    % calcul du gradient de cette fonction de coût 
+    dw = (-(C-Y)*X')/N;
+    dw0 = (-(C-Y)*ones(1,length(X))')/N;
+    % Faire la mise à jour: 
+    w = w - dw*lr;
+    w0 = w0 - dw0*lr;
+end
+
+hold on
+plotw(w0,w, 'Droite avec Optimization')
+title('Regression Logistique avant et apres entrainement')
+
+
+subplot(1,2,2)
+plot(1:Nepochs, Losses)
+title('Loss par rapport au n de epochs')
+xlabel('Nombre de Epochs')
+ylabel('Loss')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Fonction de représentation graphique des données 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function plotw(bias, w)
-fplot(@(x) -(bias + w(1)*x )/w(2), [0 20])
+function plotw(bias, w, text)
+    fplot(@(x) -(bias + w(1)*x )/w(2), [0 20], 'DisplayName', text)
+    legend('-DynamicLegend')
 end
 
 function plotdata(MX, MY,b,w)
