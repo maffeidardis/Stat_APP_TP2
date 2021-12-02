@@ -41,8 +41,10 @@ w = randn(1,2);
 % Choix du pas d'apprentissage (ou learning rate): 
 lr = 0.01
 % représenter les données et la droite
-figure % pour obtenir une nouvelle figure
+% pour obtenir une nouvelle figure
+subplot(1,2,1)
 plotdata(X,C,w0,w)
+title('Fitting before')
 
 
 % inférence : calculer les probabilités d'appartenir à la classe 1,
@@ -53,14 +55,16 @@ Y = 1./(1+exp(-a));
 % calcul de la fonction de coût
 
 %Fonction de cout pour chaque point
-L = -(C*log(Y') + (1-C)*log(1-Y'))/N
-%Fonction de cout total
+L =  -(C*log(Y') + (1-C)*log(1-Y'))/N
 % calcul du gradient de cette fonction de coût 
-% dw = ...
-% dw0 = ...
+dw = (-(C-Y)*X')/N;
+dw0 = (-(C-Y)*ones(1,length(X))')/N;
 % Faire la mise à jour: 
-% w = ... 
-% w0 = ... 
+w = w - dw*lr
+w0 = w0 - dw0*lr
+subplot(1,2,2)
+plotdata(X,C,w0,w)
+title('Fitting after')
 % Représenter la nouvelle droite et jouer avec le pas d'apprentissage 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
