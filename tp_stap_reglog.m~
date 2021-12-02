@@ -17,15 +17,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Chargement des données 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-clear all
-clc
-format compact
 load reglog_data_1.mat
 % Vous disposez désormais de X et C 
 % Regarder les données : contenu, dimensions, ... 
 % On peut aussi les représenter sur une figure:
 plotdata(X,C)
-N = length(C);
+N = length(C');
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -47,14 +44,16 @@ plotdata(X,C,w0,w)
 
 % inférence : calculer les probabilités d'appartenir à la classe 1,
 % selon le modèle de paramètres w0 et w, pour chaque exemple de X`
-a = w0 + w*X;
+X = X';
+a = w0 + w(1).*X(:, 1) + w(2).*X(:, 2);
 Y = 1./(1+exp(-a));
 
 % calcul de la fonction de coût
 
 %Fonction de cout pour chaque point
-L = -(C*log(Y') + (1-C)*log(1-Y'))/N
+L = -(C.*log(Y) + (C-1).*log(1-Y));
 %Fonction de cout total
+Ltot = sum(L)/N;
 % calcul du gradient de cette fonction de coût 
 % dw = ...
 % dw0 = ...
