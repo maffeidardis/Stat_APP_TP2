@@ -79,7 +79,7 @@ function [] = RegressionLogistique(X, C, lr, Nepochs)
                 
         %Il faut calculer la norme du vecteur
         norma(e) = sqrt(w0^2 + norm(w)^2);
-        erro(e) = sum(abs(Y - C) > 0.5)/N;
+        
         
         % calcul de la fonction de coût
 
@@ -111,12 +111,6 @@ function [] = RegressionLogistique(X, C, lr, Nepochs)
     title('Evolution de la Norme');
     xlabel('Nombre de Epochs');
     ylabel('Norme')
-    
-    subplot(2,2,4);
-    plot(1:Nepochs, erro);
-    title('Taux de Erreur');
-    xlabel('Nombre de Epochs');
-    ylabel('Evolution du taux d erreur')
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Fonction de représentation graphique des données 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
